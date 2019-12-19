@@ -1,0 +1,10 @@
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\bin\Release\SerialGUI.exe.config
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\bin\Release\SerialGUI.exe
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\bin\Release\SerialGUI.pdb
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\obj\Release\SerialGUI.FormSerialPort.resources
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\obj\Release\SerialGUI.Properties.Resources.resources
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\obj\Release\SerialGUI.csproj.GenerateResource.cache
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\obj\Release\SerialGUI.csproj.CoreCompileInputs.cache
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\obj\Release\SerialGUI.exe
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\obj\Release\SerialGUI.pdb
+D:\Du lieu\Lap trinh\C#\SerialGUI\SerialGUI\obj\Release\SerialGUI.csprojAssemblyReference.cache
