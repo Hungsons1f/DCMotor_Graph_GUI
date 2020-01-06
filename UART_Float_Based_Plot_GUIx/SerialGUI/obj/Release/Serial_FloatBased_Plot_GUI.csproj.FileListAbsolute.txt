@@ -1,0 +1,7 @@
+D:\Du lieu\Lap trinh\C#\UART_Float_Based_Plot_GUIx\SerialGUI\obj\Release\Serial_FloatBased_Plot_GUI.csprojAssemblyReference.cache
+D:\Du lieu\Lap trinh\C#\UART_Float_Based_Plot_GUIx\SerialGUI\obj\Release\SerialGUI.FormSerialPort.resources
+D:\Du lieu\Lap trinh\C#\UART_Float_Based_Plot_GUIx\SerialGUI\obj\Release\SerialGUI.Properties.Resources.resources
+D:\Du lieu\Lap trinh\C#\UART_Float_Based_Plot_GUIx\SerialGUI\obj\Release\Serial_FloatBased_Plot_GUI.csproj.GenerateResource.cache
+D:\Du lieu\Lap trinh\C#\UART_Float_Based_Plot_GUIx\SerialGUI\obj\Release\Serial_FloatBased_Plot_GUI.csproj.CoreCompileInputs.cache
+D:\Du lieu\Lap trinh\C#\UART_Float_Based_Plot_GUIx\SerialGUI\obj\Release\SerialGUI.exe
+D:\Du lieu\Lap trinh\C#\UART_Float_Based_Plot_GUIx\SerialGUI\obj\Release\SerialGUI.pdb

@@ -26,13 +26,13 @@ namespace SerialGUI
         string outBuffer;
         int[] inBuffer = new int[5];
         double realtime = 0;                                    //Khai báo biến thời gian để vẽ đồ thị
-        double realtimestep = 0.25;
+        double realtimestep = 0.01;
         double setpoint = 0;                                       //Khai báo biến dữ liệu thứ nhất để vẽ đồ thị
         double measure = 0;                                      //Khai báo biến dữ liệu thứ 2 để vẽ đồ thị
         graphStatus status = graphStatus.GraphStop;
         graphScroll enScroll = graphScroll.Scroll;
 
-
+        byte[] inByte = new byte[5];
 
     /*Form methods --------------------------------------------------------------------------------------------------------*/
         public FormSerialPort()
@@ -57,10 +57,10 @@ namespace SerialGUI
             LineItem curve2 = myPane.AddCurve("Giá trị đo", list2, Color.MediumSlateBlue, SymbolType.None);
 
             myPane.XAxis.Scale.Min = 0;                         //Đặt giới hạn đồ thị
-            myPane.XAxis.Scale.Max = 30;
-            myPane.XAxis.Scale.MinorStep = 1;                   //Đặt các bước độ chia
-            myPane.XAxis.Scale.MajorStep = 5;
-            myPane.YAxis.Scale.Min = -100;                      //Tương tự cho trục y
+            myPane.XAxis.Scale.Max = 6;
+            myPane.XAxis.Scale.MinorStep = 0.1;                   //Đặt các bước độ chia
+            myPane.XAxis.Scale.MajorStep = 1;
+            myPane.YAxis.Scale.Min = 0;                      //Tương tự cho trục y
             myPane.YAxis.Scale.Max = 100;
 
             myPane.AxisChange();
@@ -102,6 +102,12 @@ namespace SerialGUI
 
                 btnDisCon.Enabled = false;
                 btnConnect.Enabled = true;
+
+                realtime = 0;                                    //Khai báo biến thời gian để vẽ đồ thị
+                realtimestep = 0.1;
+                setpoint = 0;                                       //Khai báo biến dữ liệu thứ nhất để vẽ đồ thị
+                measure = 0;                                      //Khai báo biến dữ liệu thứ 2 để vẽ đồ thị
+
             }
             catch (Exception err)
             {
@@ -137,31 +143,21 @@ namespace SerialGUI
             tBoxDisplayGet.Text = null;
         }
 
-        private void btnRun_Click(object sender, EventArgs e)
+        private void btnGraph_Click(object sender, EventArgs e)
         {
-            status = graphStatus.GraphRun;
-            btnRun.Enabled = false;
-            btnStop.Enabled = true;
-
-            gBoxWhatToMeasure.Enabled = false;
-            gBoxPID.Enabled = false;
-            tBoxSetPoint.Enabled = false;
-        }
-
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-            status = graphStatus.GraphStop;
-            btnStop.Enabled = false;
-            btnRun.Enabled = true;
-
-            gBoxWhatToMeasure.Enabled = true;
-            gBoxPID.Enabled = true;
-            tBoxSetPoint.Enabled = true;
-        }
-
-        private void btnClearGraph_Click(object sender, EventArgs e)
-        {
-            clearGraph();
+            switch (status)
+            {
+                case graphStatus.GraphRun:
+                    status = graphStatus.GraphStop;
+                    btnGraph.Text = "Graph";
+                    break;
+                case graphStatus.GraphStop:
+                    status = graphStatus.GraphRun;
+                    btnGraph.Text = "NotGraph";
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void btnCompact_Click(object sender, EventArgs e)
@@ -185,15 +181,19 @@ namespace SerialGUI
         {
             try
             {
-                //byte[] temp = new byte[1];
+                clearGraph();              //byte[] temp = new byte[1];
                 //temp[0] = (byte)UARTCom.controlHeader.Run;
                 //sPort.Write(temp, 0, 1);
                 byte[] setPointBuffer = UARTCom.headerEncapsulation(UARTCom.controlHeader.Run, "0");
                 sPort.Write(setPointBuffer, 0, 5);
-
-
+                
                 btnMotorRun.Enabled = false;
                 btnMotorStop.Enabled = true;
+
+                gBoxWhatToMeasure.Enabled = false;
+                gBoxPID.Enabled = false;
+                //tBoxSetPoint.Enabled = false;
+
             }
             catch (Exception err)
             {
@@ -211,10 +211,13 @@ namespace SerialGUI
                 //sPort.Write(temp, 0, 1);
                 byte[] setPointBuffer = UARTCom.headerEncapsulation(UARTCom.controlHeader.Stop, "0");
                 sPort.Write(setPointBuffer, 0, 5);
-
-
+                
                 btnMotorRun.Enabled = true;
-                btnMotorStop.Enabled = false; ;
+                btnMotorStop.Enabled = false;
+
+                gBoxWhatToMeasure.Enabled = true;
+                gBoxPID.Enabled = true;
+                //tBoxSetPoint.Enabled = true;
             }
             catch (Exception err)
             {
@@ -232,7 +235,8 @@ namespace SerialGUI
         {
             try
             {
-                readBuffer(ref inBuffer);
+                //readBuffer(ref inBuffer);
+                sPort.Read(inByte, 0, 5);
                 this.Invoke(new EventHandler(showAndSaveData));
 
                 if (status == graphStatus.GraphRun)
@@ -253,58 +257,80 @@ namespace SerialGUI
             }
         }
 
+        int textupdate = 50;
         private void showAndSaveData(object sender, EventArgs e)
         {
-            int[] dataWithoutHeader;
-            UARTCom.dataHeader header = UARTCom.classifyData(inBuffer, out dataWithoutHeader);
-            float displayValue = UARTCom.uARTtoFloat(dataWithoutHeader);
+            /*int[]*/byte[] dataWithoutHeader;
+            //UARTCom.dataHeader header = UARTCom.classifyData(inBuffer, out dataWithoutHeader);
+            //float displayValue = UARTCom.uARTtoFloat(dataWithoutHeader);
+
+            UARTCom.dataHeader header = UARTCom.classifyByte(inByte, out dataWithoutHeader);
+            float displayValue = UARTCom.uARTBytetoFloat(dataWithoutHeader);
 
             switch (header)
             {
                 case UARTCom.dataHeader.Realtime:
-                    realtimestep = displayValue;
+                    //realtimestep = displayValue;
                     break;
                 case UARTCom.dataHeader.Setpoint:
                     setpoint = displayValue;
                     tBoxDisplayGet.Text += UARTCom.motorMessage[4];
+                    tBoxDisplayGet.Text += displayValue.ToString();
+                    tBoxDisplayGet.Text += Environment.NewLine;
                     break;
                 case UARTCom.dataHeader.Measure:
                     measure = displayValue;
                     break;
                 case UARTCom.dataHeader.Run:
                     tBoxDisplayGet.Text += UARTCom.motorMessage[0];
+                    tBoxDisplayGet.Text += Environment.NewLine;
                     break;
                 case UARTCom.dataHeader.Stop:
                     tBoxDisplayGet.Text += UARTCom.motorMessage[1];
+                    tBoxDisplayGet.Text += Environment.NewLine;
                     break;
                 case UARTCom.dataHeader.Velocity:
                     tBoxDisplayGet.Text += UARTCom.motorMessage[2];
+                    tBoxDisplayGet.Text += Environment.NewLine;
                     break;
                 case UARTCom.dataHeader.Position:
                     tBoxDisplayGet.Text += UARTCom.motorMessage[3];
+                    tBoxDisplayGet.Text += Environment.NewLine;
                     break;
                 case UARTCom.dataHeader.Kp:
                     tBoxDisplayGet.Text += UARTCom.motorMessage[5];
+                    tBoxDisplayGet.Text += displayValue.ToString();
+                    tBoxDisplayGet.Text += Environment.NewLine;
                     break;
                 case UARTCom.dataHeader.Ki:
                     tBoxDisplayGet.Text += UARTCom.motorMessage[6];
+                    tBoxDisplayGet.Text += displayValue.ToString();
+                    tBoxDisplayGet.Text += Environment.NewLine;
                     break;
                 case UARTCom.dataHeader.Kd:
                     tBoxDisplayGet.Text += UARTCom.motorMessage[7];
+                    tBoxDisplayGet.Text += displayValue.ToString();
+                    tBoxDisplayGet.Text += Environment.NewLine;
                     break;
                 default:
                     break;
             }
 
-            tBoxTime.Text = realtime.ToString();
-            tBoxMeasure.Text = measure.ToString();
-            tBoxDisplayGet.Text += displayValue.ToString();
-            tBoxDisplayGet.Text += Environment.NewLine;
+            textupdate--;
+            if (textupdate == 0)
+            {
+                tBoxTime.Text = realtime.ToString();
+                tBoxMeasure.Text = measure.ToString();
+                tBoxDisplayGet.Text += displayValue.ToString();
+                tBoxDisplayGet.Text += Environment.NewLine;
+                textupdate = 50;
+            }
 
             realtime += realtimestep;
         }
-        
+
         // Vẽ đồ thị
+        int update = 50;
         private void Draw()
         {
             LineItem curve = zGrphPlotData.GraphPane.CurveList[0] as LineItem;   //Khai báo đường cong từ danh sách đường cong đồ thị (kế thừa từ heap của dữ liệu ở Form_load)
@@ -330,8 +356,9 @@ namespace SerialGUI
                 // Tự động Scale theo trục x
                 if (realtime > xScale.Max - xScale.MajorStep)       //Nếu realtime lớn hơn Max x trừ đi 1 MajorStep (2 vạch lớn)
                 {
+                    xScale.Min = xScale.Min + realtime - (xScale.Max - xScale.MajorStep);
                     xScale.Max = realtime + xScale.MajorStep;       //Tự dời đồ thị qua 1 MajorStep 
-                    xScale.Min = xScale.Max - 30;
+                    //xScale.Min = xScale.Max - 6;
                 }
                 // Tự động Scale theo trục y
                 if (setpoint > yScale.Max - yScale.MajorStep)          //Nếu datas vượt quá giới hạn trừ 1 MajorStep
@@ -342,9 +369,15 @@ namespace SerialGUI
                 {
                     yScale.Min = setpoint - yScale.MajorStep;
                 }
-                zGrphPlotData.AxisChange();                      //Thay đổi trục theo giá trị Scale
             }
-            zGrphPlotData.Invalidate();                      //Mở khoá để và vẽ lại
+
+            update--;
+            if (update == 0)
+            {
+                zGrphPlotData.AxisChange();                      //Thay đổi trục theo giá trị Scale
+                zGrphPlotData.Invalidate();                      //Mở khoá để và vẽ lại
+                update = 50;
+            }
         }
             
                
@@ -373,9 +406,70 @@ namespace SerialGUI
             }
         }
 
+        private void tBoxKp_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    byte[] kpBuffer = UARTCom.headerEncapsulation(UARTCom.controlHeader.Kp, tBoxKp.Text);
+                    sPort.Write(kpBuffer, 0, 5);
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //throw;
+            }
+
+        }
+
+        private void tBoxKi_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    byte[] kiBuffer = UARTCom.headerEncapsulation(UARTCom.controlHeader.Ki, tBoxKi.Text);
+                    sPort.Write(kiBuffer, 0, 5);
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //throw;
+            }
+        }
+
+        private void tBoxKd_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    byte[] kdBuffer = UARTCom.headerEncapsulation(UARTCom.controlHeader.Kd, tBoxKd.Text);
+                    sPort.Write(kdBuffer, 0, 5);
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //throw;
+            }
+        }
+
+        private void tBoxTimeStep_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                realtimestep = Double.Parse(tBoxTimeStep.Text);
+            }
+        }
 
 
-    /*Radio Button methods*/
+
+
+        /*Radio Button methods*/
         private void rBtnVP_CheckedChanged(object sender, EventArgs e)
         {
             try
@@ -433,64 +527,31 @@ namespace SerialGUI
             LineItem curve2 = myPane.AddCurve("Giá trị đo", list2, Color.MediumSlateBlue, SymbolType.None);
 
             myPane.XAxis.Scale.Min = 0;                         //Đặt giới hạn đồ thị
-            myPane.XAxis.Scale.Max = 30;
-            myPane.XAxis.Scale.MinorStep = 1;                   //Đặt các bước độ chia
-            myPane.XAxis.Scale.MajorStep = 5;
-            myPane.YAxis.Scale.Min = -100;                      //Tương tự cho trục y
-            myPane.YAxis.Scale.Max = 100;
+            myPane.XAxis.Scale.Max = 6;
+            myPane.XAxis.Scale.MinorStep = 0.1;                   //Đặt các bước độ chia
+            myPane.XAxis.Scale.MajorStep = 1;
+            //myPane.YAxis.Scale.Min = 0;                      //Tương tự cho trục y
+            //myPane.YAxis.Scale.Max = 100;
+
             myPane.AxisChange();
         }
 
-        private void tBoxKp_KeyDown(object sender, KeyEventArgs e)
+        private void btnRequest_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    byte[] kpBuffer = UARTCom.headerEncapsulation(UARTCom.controlHeader.Kp, tBoxKp.Text);
-                    sPort.Write(kpBuffer, 0, 5);
-                }
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //throw;
-            }
 
         }
 
-        private void tBoxKi_KeyDown(object sender, KeyEventArgs e)
+        private void btnAbout_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    byte[] kiBuffer = UARTCom.headerEncapsulation(UARTCom.controlHeader.Ki, tBoxKi.Text);
-                    sPort.Write(kiBuffer, 0, 5);
-                }
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //throw;
-            }
-        }
-
-        private void tBoxKd_KeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    byte[] kdBuffer = UARTCom.headerEncapsulation(UARTCom.controlHeader.Kd, tBoxKd.Text);
-                    sPort.Write(kdBuffer, 0, 5);
-                }
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //throw;
-            }
+            MessageBox.Show("Nhóm tác giả: \n" +
+                "\t Lý Ngọc Trân Châu\n" +
+                "\t Nguyễn Hùng Sơn \n" +
+                "\t Lê Xuân Thuyên \n" +
+                "\n" +
+                "Thông số calib bộ điều khiển PID: \n" +
+                "\t Kp = 0.1 \n" +
+                "\t Ki = 0.025 \n" +
+                "\t Kd = 0.005 \n", "About...", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 
@@ -634,6 +695,51 @@ namespace SerialGUI
             temp[3] = tempBuffer[2];
             temp[4] = tempBuffer[3];
             return temp;
+        }
+
+
+
+
+
+        static public dataHeader classifyByte(byte[] inData, out byte[] outData)
+        {
+            outData = new byte[100];
+            /*int i = 0;
+            foreach (var item in inData)
+            {
+                if (i == 0)
+                {
+                    i++;
+                    continue;
+                }
+                else
+                {
+                    outData[i - 1] = item;
+                    i++;
+                }
+            }*/
+            outData[0] = inData[1];
+            outData[1] = inData[2];
+            outData[2] = inData[3];
+            outData[3] = inData[4];
+            return (dataHeader)inData[0];
+        }
+
+        static public float uARTBytetoFloat(byte[] uBuffer)
+        {
+            float value = 0;
+            unsafe
+            {
+                long temp = 0;
+                temp = uBuffer[0];
+                temp = (temp << 8) + uBuffer[1];
+                temp = (temp << 8) + uBuffer[2];
+                temp = (temp << 8) + uBuffer[3];
+                float* pFloat;
+                pFloat = (float*)&temp;
+                value = *pFloat;
+            }
+            return value;
         }
 
     }

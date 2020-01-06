@@ -53,9 +53,7 @@
             this.tBoxDisplayGet = new System.Windows.Forms.TextBox();
             this.btnClearGet = new System.Windows.Forms.Button();
             this.zGrphPlotData = new ZedGraph.ZedGraphControl();
-            this.btnRun = new System.Windows.Forms.Button();
-            this.btnStop = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
+            this.btnGraph = new System.Windows.Forms.Button();
             this.btnCompact = new System.Windows.Forms.Button();
             this.gBoxMotor = new System.Windows.Forms.GroupBox();
             this.btnMotorStop = new System.Windows.Forms.Button();
@@ -64,8 +62,10 @@
             this.rBtnPosition = new System.Windows.Forms.RadioButton();
             this.rBtnVelocity = new System.Windows.Forms.RadioButton();
             this.tBoxMeasure = new System.Windows.Forms.TextBox();
+            this.tBoxTimeStep = new System.Windows.Forms.TextBox();
             this.tBoxSetPoint = new System.Windows.Forms.TextBox();
             this.tBoxTime = new System.Windows.Forms.TextBox();
+            this.lbTimeStep = new System.Windows.Forms.Label();
             this.lbVelocity = new System.Windows.Forms.Label();
             this.lbSetpoint = new System.Windows.Forms.Label();
             this.lbTime = new System.Windows.Forms.Label();
@@ -76,7 +76,8 @@
             this.tBoxKi = new System.Windows.Forms.TextBox();
             this.tBoxKp = new System.Windows.Forms.TextBox();
             this.lbKp = new System.Windows.Forms.Label();
-            this.gBoxGraphControl = new System.Windows.Forms.GroupBox();
+            this.btnRequest = new System.Windows.Forms.Button();
+            this.btnAbout = new System.Windows.Forms.Button();
             this.gBoxChooseSerialPort.SuspendLayout();
             this.gBoxCtrlSerialPort.SuspendLayout();
             this.gBoxTransmitter.SuspendLayout();
@@ -84,7 +85,6 @@
             this.gBoxMotor.SuspendLayout();
             this.gBoxWhatToMeasure.SuspendLayout();
             this.gBoxPID.SuspendLayout();
-            this.gBoxGraphControl.SuspendLayout();
             this.SuspendLayout();
             // 
             // gBoxChooseSerialPort
@@ -349,40 +349,19 @@
             this.zGrphPlotData.TabIndex = 5;
             this.zGrphPlotData.UseExtendedPrintDialog = true;
             // 
-            // btnRun
+            // btnGraph
             // 
-            this.btnRun.Location = new System.Drawing.Point(6, 25);
-            this.btnRun.Name = "btnRun";
-            this.btnRun.Size = new System.Drawing.Size(75, 23);
-            this.btnRun.TabIndex = 6;
-            this.btnRun.Text = "Run";
-            this.btnRun.UseVisualStyleBackColor = true;
-            this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
-            // 
-            // btnStop
-            // 
-            this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(6, 54);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(75, 23);
-            this.btnStop.TabIndex = 6;
-            this.btnStop.Text = "Stop";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Location = new System.Drawing.Point(87, 25);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 6;
-            this.btnClear.Text = "Clear";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClearGraph_Click);
+            this.btnGraph.Location = new System.Drawing.Point(6, 231);
+            this.btnGraph.Name = "btnGraph";
+            this.btnGraph.Size = new System.Drawing.Size(75, 23);
+            this.btnGraph.TabIndex = 6;
+            this.btnGraph.Text = "Graph";
+            this.btnGraph.UseVisualStyleBackColor = true;
+            this.btnGraph.Click += new System.EventHandler(this.btnGraph_Click);
             // 
             // btnCompact
             // 
-            this.btnCompact.Location = new System.Drawing.Point(87, 54);
+            this.btnCompact.Location = new System.Drawing.Point(88, 231);
             this.btnCompact.Name = "btnCompact";
             this.btnCompact.Size = new System.Drawing.Size(75, 23);
             this.btnCompact.TabIndex = 7;
@@ -392,18 +371,22 @@
             // 
             // gBoxMotor
             // 
+            this.gBoxMotor.Controls.Add(this.btnGraph);
             this.gBoxMotor.Controls.Add(this.btnMotorStop);
             this.gBoxMotor.Controls.Add(this.btnMotorRun);
             this.gBoxMotor.Controls.Add(this.gBoxWhatToMeasure);
+            this.gBoxMotor.Controls.Add(this.btnCompact);
             this.gBoxMotor.Controls.Add(this.tBoxMeasure);
+            this.gBoxMotor.Controls.Add(this.tBoxTimeStep);
             this.gBoxMotor.Controls.Add(this.tBoxSetPoint);
             this.gBoxMotor.Controls.Add(this.tBoxTime);
+            this.gBoxMotor.Controls.Add(this.lbTimeStep);
             this.gBoxMotor.Controls.Add(this.lbVelocity);
             this.gBoxMotor.Controls.Add(this.lbSetpoint);
             this.gBoxMotor.Controls.Add(this.lbTime);
             this.gBoxMotor.Location = new System.Drawing.Point(196, 18);
             this.gBoxMotor.Name = "gBoxMotor";
-            this.gBoxMotor.Size = new System.Drawing.Size(169, 223);
+            this.gBoxMotor.Size = new System.Drawing.Size(169, 270);
             this.gBoxMotor.TabIndex = 8;
             this.gBoxMotor.TabStop = false;
             this.gBoxMotor.Text = "Motor Control";
@@ -411,7 +394,7 @@
             // btnMotorStop
             // 
             this.btnMotorStop.Enabled = false;
-            this.btnMotorStop.Location = new System.Drawing.Point(87, 188);
+            this.btnMotorStop.Location = new System.Drawing.Point(88, 202);
             this.btnMotorStop.Name = "btnMotorStop";
             this.btnMotorStop.Size = new System.Drawing.Size(75, 23);
             this.btnMotorStop.TabIndex = 8;
@@ -421,7 +404,7 @@
             // 
             // btnMotorRun
             // 
-            this.btnMotorRun.Location = new System.Drawing.Point(6, 188);
+            this.btnMotorRun.Location = new System.Drawing.Point(6, 202);
             this.btnMotorRun.Name = "btnMotorRun";
             this.btnMotorRun.Size = new System.Drawing.Size(75, 23);
             this.btnMotorRun.TabIndex = 8;
@@ -466,32 +449,50 @@
             // 
             // tBoxMeasure
             // 
-            this.tBoxMeasure.Location = new System.Drawing.Point(72, 154);
+            this.tBoxMeasure.Location = new System.Drawing.Point(87, 173);
             this.tBoxMeasure.Name = "tBoxMeasure";
             this.tBoxMeasure.ReadOnly = true;
-            this.tBoxMeasure.Size = new System.Drawing.Size(91, 20);
+            this.tBoxMeasure.Size = new System.Drawing.Size(76, 20);
             this.tBoxMeasure.TabIndex = 6;
+            // 
+            // tBoxTimeStep
+            // 
+            this.tBoxTimeStep.Location = new System.Drawing.Point(87, 95);
+            this.tBoxTimeStep.Name = "tBoxTimeStep";
+            this.tBoxTimeStep.Size = new System.Drawing.Size(76, 20);
+            this.tBoxTimeStep.TabIndex = 6;
+            this.tBoxTimeStep.Text = "0.01";
+            this.tBoxTimeStep.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tBoxTimeStep_KeyDown);
             // 
             // tBoxSetPoint
             // 
-            this.tBoxSetPoint.Location = new System.Drawing.Point(72, 127);
+            this.tBoxSetPoint.Location = new System.Drawing.Point(87, 121);
             this.tBoxSetPoint.Name = "tBoxSetPoint";
-            this.tBoxSetPoint.Size = new System.Drawing.Size(91, 20);
+            this.tBoxSetPoint.Size = new System.Drawing.Size(76, 20);
             this.tBoxSetPoint.TabIndex = 6;
             this.tBoxSetPoint.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tBoxSetPoint_KeyDown);
             // 
             // tBoxTime
             // 
-            this.tBoxTime.Location = new System.Drawing.Point(72, 100);
+            this.tBoxTime.Location = new System.Drawing.Point(87, 147);
             this.tBoxTime.Name = "tBoxTime";
             this.tBoxTime.ReadOnly = true;
-            this.tBoxTime.Size = new System.Drawing.Size(91, 20);
+            this.tBoxTime.Size = new System.Drawing.Size(76, 20);
             this.tBoxTime.TabIndex = 6;
+            // 
+            // lbTimeStep
+            // 
+            this.lbTimeStep.AutoSize = true;
+            this.lbTimeStep.Location = new System.Drawing.Point(6, 98);
+            this.lbTimeStep.Name = "lbTimeStep";
+            this.lbTimeStep.Size = new System.Drawing.Size(69, 13);
+            this.lbTimeStep.TabIndex = 5;
+            this.lbTimeStep.Text = "Time Step (s)";
             // 
             // lbVelocity
             // 
             this.lbVelocity.AutoSize = true;
-            this.lbVelocity.Location = new System.Drawing.Point(6, 157);
+            this.lbVelocity.Location = new System.Drawing.Point(7, 176);
             this.lbVelocity.Name = "lbVelocity";
             this.lbVelocity.Size = new System.Drawing.Size(44, 13);
             this.lbVelocity.TabIndex = 5;
@@ -500,7 +501,7 @@
             // lbSetpoint
             // 
             this.lbSetpoint.AutoSize = true;
-            this.lbSetpoint.Location = new System.Drawing.Point(6, 130);
+            this.lbSetpoint.Location = new System.Drawing.Point(6, 124);
             this.lbSetpoint.Name = "lbSetpoint";
             this.lbSetpoint.Size = new System.Drawing.Size(50, 13);
             this.lbSetpoint.TabIndex = 5;
@@ -509,11 +510,11 @@
             // lbTime
             // 
             this.lbTime.AutoSize = true;
-            this.lbTime.Location = new System.Drawing.Point(6, 103);
+            this.lbTime.Location = new System.Drawing.Point(6, 150);
             this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(30, 13);
+            this.lbTime.Size = new System.Drawing.Size(44, 13);
             this.lbTime.TabIndex = 5;
-            this.lbTime.Text = "Time";
+            this.lbTime.Text = "Time (s)";
             // 
             // gBoxPID
             // 
@@ -523,7 +524,7 @@
             this.gBoxPID.Controls.Add(this.tBoxKi);
             this.gBoxPID.Controls.Add(this.tBoxKp);
             this.gBoxPID.Controls.Add(this.lbKp);
-            this.gBoxPID.Location = new System.Drawing.Point(196, 247);
+            this.gBoxPID.Location = new System.Drawing.Point(196, 294);
             this.gBoxPID.Name = "gBoxPID";
             this.gBoxPID.Size = new System.Drawing.Size(169, 100);
             this.gBoxPID.TabIndex = 8;
@@ -581,25 +582,33 @@
             this.lbKp.TabIndex = 5;
             this.lbKp.Text = "P";
             // 
-            // gBoxGraphControl
+            // btnRequest
             // 
-            this.gBoxGraphControl.Controls.Add(this.btnRun);
-            this.gBoxGraphControl.Controls.Add(this.btnStop);
-            this.gBoxGraphControl.Controls.Add(this.btnClear);
-            this.gBoxGraphControl.Controls.Add(this.btnCompact);
-            this.gBoxGraphControl.Location = new System.Drawing.Point(196, 353);
-            this.gBoxGraphControl.Name = "gBoxGraphControl";
-            this.gBoxGraphControl.Size = new System.Drawing.Size(169, 99);
-            this.gBoxGraphControl.TabIndex = 9;
-            this.gBoxGraphControl.TabStop = false;
-            this.gBoxGraphControl.Text = "Graph Control";
+            this.btnRequest.Location = new System.Drawing.Point(202, 401);
+            this.btnRequest.Name = "btnRequest";
+            this.btnRequest.Size = new System.Drawing.Size(75, 23);
+            this.btnRequest.TabIndex = 9;
+            this.btnRequest.Text = "Request";
+            this.btnRequest.UseVisualStyleBackColor = true;
+            this.btnRequest.Click += new System.EventHandler(this.btnRequest_Click);
+            // 
+            // btnAbout
+            // 
+            this.btnAbout.Location = new System.Drawing.Point(284, 401);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(75, 23);
+            this.btnAbout.TabIndex = 9;
+            this.btnAbout.Text = "About";
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // FormSerialPort
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1007, 466);
-            this.Controls.Add(this.gBoxGraphControl);
+            this.Controls.Add(this.btnAbout);
+            this.Controls.Add(this.btnRequest);
             this.Controls.Add(this.gBoxPID);
             this.Controls.Add(this.gBoxMotor);
             this.Controls.Add(this.gBoxReceiver);
@@ -625,7 +634,6 @@
             this.gBoxWhatToMeasure.PerformLayout();
             this.gBoxPID.ResumeLayout(false);
             this.gBoxPID.PerformLayout();
-            this.gBoxGraphControl.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -655,9 +663,7 @@
         private System.Windows.Forms.TextBox tBoxDisplayGet;
         private System.Windows.Forms.Button btnClearGet;
         private ZedGraph.ZedGraphControl zGrphPlotData;
-        private System.Windows.Forms.Button btnRun;
-        private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnGraph;
         private System.Windows.Forms.Button btnCompact;
         private System.Windows.Forms.GroupBox gBoxMotor;
         private System.Windows.Forms.GroupBox gBoxWhatToMeasure;
@@ -676,9 +682,12 @@
         private System.Windows.Forms.TextBox tBoxKi;
         private System.Windows.Forms.TextBox tBoxKp;
         private System.Windows.Forms.Label lbKp;
-        private System.Windows.Forms.GroupBox gBoxGraphControl;
         private System.Windows.Forms.Button btnMotorStop;
         private System.Windows.Forms.Button btnMotorRun;
+        private System.Windows.Forms.TextBox tBoxTimeStep;
+        private System.Windows.Forms.Label lbTimeStep;
+        private System.Windows.Forms.Button btnRequest;
+        private System.Windows.Forms.Button btnAbout;
     }
 }
 
